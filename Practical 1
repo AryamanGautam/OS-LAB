@@ -3,7 +3,7 @@ title2 = "Burst Time"
 title3 = "Waiting Time"
 title4 = "Turn Around Time"
 
-
+#work in progress 
 
 def fcfs(proc,lent,burT):
     
