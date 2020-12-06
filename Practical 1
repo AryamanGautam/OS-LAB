@@ -3,11 +3,9 @@ title2 = "Burst Time"
 title3 = "Waiting Time"
 title4 = "Turn Around Time"
 
-#work in progress 
-
 def fcfs(proc,lent,burT):
     
-    print("fcfs")
+    
     print("%-15s %-15s %-15s %s" %(title1, title2, title3,title4))
     
     
@@ -41,165 +39,207 @@ def fcfs(proc,lent,burT):
     
     
     
-def sjf(proc,lent,burT):
     
-    print("sjf")
+    
+    def sjf(proc,lent,burT):
+    
+    
     print("%-15s %-15s %-15s %s" %(title1, title2, title3,title4))
     
     
-    excl = []
-    toexcl = -1
-    avail = []
-    for ad in range(lent):
-        avail.append(ad)
-    for i in range(lent):
-        toexcl = avail[0]
-        for j in range(lent):
-            if j not in excl:
-                if burT[toexcl]>burT[j]:
-                    toexcl = j
-        excl.append(toexcl)
-        avail.remove(toexcl)
-    
-    waiting_time = []
-    turn_around_time = []
-    avg_wt = 0
-    avg_tat = 0
-    for k in range(lent):
-        waiting_time.append(0)
-        a = proc.index(excl[0])
-        if k != 0:
-            waiting_time[k] = waiting_time[k-1]+ burT[proc.index(excl[k-1])]
-        turn_around_time.append(waiting_time[k]+burT[k])
-        avg_wt += waiting_time[k]
-        avg_tat += turn_around_time[k]
-        
-        
-        print ("%-15s %-15s %-15s %s" %(excl[k], burT[k], waiting_time[k],turn_around_time[k]))
-        
-        
-    avg_wt = avg_wt/lent
-    avg_tat = avg_tat/lent
-    print()
-    print()
-    print("The average of waiting time is  : ",avg_wt)
-    print("The average turn around time is : ",avg_tat)
-    print()
-    print()
-    
-
-
-def pfs(proc,lent,burT,ordr):
-    
-    print("pfs")
-    print("%-15s %-15s %-15s %s" %(title1, title2, title3,title4))
+    a = burT.copy()
+    shldnt = []
     
     
-    waiting_time = []
-    turn_around_time = []
-    avg_wt = 0
-    avg_tat = 0
-    for k in range(lent):
-        waiting_time.append(0)
-        a = proc.index(ordr[0])
-        if k != 0:
-            waiting_time[k] = waiting_time[k-1]+ burT[proc.index(ordr[k-1])]
-        turn_around_time.append(waiting_time[k]+burT[k])
-        avg_wt += waiting_time[k]
-        avg_tat += turn_around_time[k]
-        
-        
-        print ("%-15s %-15s %-15s %s" %(proc[k], burT[k], waiting_time[k],turn_around_time[k]))
-        
-        
-    avg_wt = avg_wt/lent
-    avg_tat = avg_tat/lent
-    print()
-    print()
-    print("The average of waiting time is  : ",avg_wt)
-    print("The average turn around time is : ",avg_tat)
-    print()
-    print()
+    for b in range(lent):
+        shldnt.append("Done")
     
-
-def rr(proc,lent,burT,n):
-    
-    print("rr")
-    print("%-15s %-15s %-15s %s" %(title1, title2, title3,title4))
+    excld = []
     
     
-    waiting_time = []
-    turn_around_time = []
-    avg_wt = 0
-    avg_tat = 0
-    
-    
-    dup = burT.copy()
-    final_elm = burT .copy()
-    no_times = []
-    time = [] #simply for adding
-    stp = []
-    for j in range(lent):
-        stp.append(0)
-        time.append(0)
-        no_times.append(0)
-        waiting_time.append(0)
-    cntr = 1
-    while dup != stp:
+    while a != shldnt:
         for i in range(lent):
-            if dup[i] < n :
-                final_elm[i] = dup[i]
-                dup[i] = 0
-                no_times[i] = cntr
-                
-            elif dup[i] == n:
-                final_elm[i] = n
-                dup[i] = 0
-                no_times[i] = cntr
-            elif dup[i] == 0:
+            if i in excld:
                 pass
             else:
-                if (dup[i]-n) < 0 :
-                    final_elm[i] = dup[i]
-                    dup[i] = 0
-                    no_times[i] = cntr
-                elif (dup[i]-n) == 0 :
-                    final_elm[i] = n
-                    dup[i] = 0
-                    no_times[i] = cntr
-                else:
-                    dup[i] -= n
-        cntr += 1
+                min_ = i
+                for j in range(lent):
+                    if j in excld:
+                        pass
+                    else:
+                        if a[min_] > a[j]:
+                            min_ = j
+                excld.append(min_)
+                a[min_] = "Done"
     
     
     
-    #now calculating 
+    waiting_time = []
+    turn_around_time = []
+    avg_wt = 0
+    avg_tat = 0
+    
+    for j in range(lent):
+        waiting_time.append(0)
+        tmp = excld[j]
+        otmp = excld[j-1]
+        if j != 0:
+            waiting_time[j] = waiting_time[j-1]+ burT[otmp]
+        turn_around_time.append(waiting_time[j]+burT[tmp])
+        avg_wt += waiting_time[j]
+        avg_tat += turn_around_time[j]
+        
+        
+        print ("%-15s %-15s %-15s %s" %(proc[tmp], burT[tmp], waiting_time[j],turn_around_time[j]))
+        
+        
+    avg_wt = avg_wt/lent
+    avg_tat = avg_tat/lent
+    print()
+    print()
+    print("The average of waiting time is  : ",avg_wt)
+    print("The average turn around time is : ",avg_tat)
+    print()
+    print()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def pfs(proc,lent,burT,ordr):
+    
+    
+    print("%-15s %-15s %-15s %s" %(title1, title2, title3,title4))
+    
+    
+    excld = []
+    
+    a = -1
+    b = -1
     
     for i in range(lent):
+        a = ordr[i]
+        b = proc.index(a)
+        excld.append(b)
+    
+    waiting_time = []
+    turn_around_time = []
+    avg_wt = 0
+    avg_tat = 0
+    
+    for j in range(lent):
+        waiting_time.append(0)
+        tmp = excld[j]
+        otmp = excld[j-1]
+        if j != 0:
+            waiting_time[j] = waiting_time[j-1]+ burT[otmp]
+        turn_around_time.append(waiting_time[j]+burT[tmp])
+        avg_wt += waiting_time[j]
+        avg_tat += turn_around_time[j]
+        
+        
+        print ("%-15s %-15s %-15s %s" %(proc[tmp], burT[tmp], waiting_time[j],turn_around_time[j]))
+        
+        
+    avg_wt = avg_wt/lent
+    avg_tat = avg_tat/lent
+    print()
+    print()
+    print("The average of waiting time is  : ",avg_wt)
+    print("The average turn around time is : ",avg_tat)
+    print()
+    print()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def rr(proc,lent,burT,n):
+    
+    
+    print("%-15s %-15s %-15s %s" %(title1, title2, title3,title4))
+    
+    
+    tim = []
+    stp = []
+    waiting_time = []
+    
+    a = burT.copy()
+    
+    excld = [] #maybe to avoid multiples
+    
+    
+    for i in range(lent):
+        tim.append(0)
+        stp.append(0)
+        waiting_time.append(0)
+    
+    
+    while a != stp:
         for j in range(lent):
-            if j == i:
+            if j in excld:
                 pass
             else:
-                if no_times[i] > no_times[j]:
-                    waiting_time[i] += ((no_times[j]-1)*n)
-                    waiting_time[i] += final_elm[j]
-                elif no_times[i] < no_times[j]:
-                    if i > j:
-                        waiting_time[i] += (n*no_times[i])
-                    else:
-                        waiting_time[i] += (n*(no_times[i]-1))
+                elem = a[j]
+                if elem<n:
+                    tim[j] += elem
+                    a[j] = 0
+                    
+                    
+                    excld.append(j)
+                    
+                    
+                    for k in range(lent):
+                        if k != j:
+                            waiting_time[j] += tim[k]
+                    
+                elif elem == n:
+                    tim[j] += elem
+                    a[j] = 0
+                    
+                    
+                    excld.append(j)
+                    
+                    
+                    for k in range(lent):
+                        if k != j:
+                            waiting_time[j] += tim[k]
                 else:
-                    if i > j:
-                        waiting_time[i] += (n*no_times[i])
-                    else:
-                        waiting_time[i] += (n*(no_times[i]-1))
-                        
-        avg_wt += waiting_time[i]
-        turn_around_time.append(waiting_time[i]+burT[i])
-        avg_tat += turn_around_time[i]
-        print ("%-15s %-15s %-15s %s" %(proc[i], burT[i], waiting_time[i],turn_around_time[i]))
+                    tim[j] += n
+                    a[j] -= n
+                    
+                    
+    turn_around_time = []
+    avg_wt = 0
+    avg_tat = 0
     
     
+    for l in range(lent):
+        turn_around_time.append(waiting_time[l]+burT[l])
+        avg_wt += waiting_time[l]
+        avg_tat += turn_around_time[l]
+        
+        
+        print ("%-15s %-15s %-15s %s" %(proc[l], burT[l], waiting_time[l],turn_around_time[l]))
+        
+        
     avg_wt = avg_wt/lent
     avg_tat = avg_tat/lent
     print()
@@ -228,28 +268,15 @@ def rr(proc,lent,burT,n):
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    processes = [1,2,3]
+processes = [1,2,3]
 n = len(processes)
 bt = [10,5,8]
 
 
-#pfs complete changed something
+ordar = [2,1,3]
 
 
-fcfs(processes,n,bt)
+fcfs(processes,n,bt,)
 sjf(processes,n,bt)
-ordar = [3,1,2]
 pfs(processes,n,bt,ordar)
 rr(processes,n,bt,2)
